@@ -98,7 +98,7 @@ export default function Signup() {
 
               <div className="text-sm leading-6">
                 <a
-                  href="#"
+                  href="/"
                   className="font-semibold text-indigo-600 hover:text-indigo-500"
                 >
                   Forgot password?
@@ -119,7 +119,7 @@ export default function Signup() {
           <p className="text-center text-sm leading-6 text-gray-500">
             Not a member?{' '}
             <a
-              href="#"
+              href="/"
               className="font-semibold text-indigo-600 hover:text-indigo-500"
             >
               Start a 14-day free trial

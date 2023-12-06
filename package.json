@@ -7,7 +7,7 @@
     "build": "remix build",
     "dev": "remix dev",
     "start": "remix-serve build/index.js",
-    "lint": "eslint app/",
+    "lint": "eslint app/ --max-warnings=0",
     "migration:create": "drizzle-kit generate:sqlite",
     "migration:apply": "npx tsx drizzle/migrate",
     "prepare": "husky install"
