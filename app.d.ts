@@ -3,6 +3,8 @@
 declare namespace Lucia {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   type Auth = import('./app/utils/lucia.server').Auth;
-  type DatabaseUserAttributes = {};
+  type DatabaseUserAttributes = {
+    email: string;
+  };
   type DatabaseSessionAttributes = {};
 }

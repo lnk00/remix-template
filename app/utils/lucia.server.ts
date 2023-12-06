@@ -1,14 +1,23 @@
 import { lucia } from 'lucia';
-import { prisma } from '@lucia-auth/adapter-prisma';
-import { DatabaseClient } from './prisma.server';
+import { libSQLClient } from './drizzle.server';
 import { web } from 'lucia/middleware';
+import { libsql } from '@lucia-auth/adapter-sqlite';
 
 export const auth = lucia({
   env: 'DEV',
-  adapter: prisma(DatabaseClient),
+  adapter: libsql(libSQLClient, {
+    user: 'user',
+    key: 'user_key',
+    session: 'user_session',
+  }),
   middleware: web(),
   sessionCookie: {
     expires: false,
+  },
+  getUserAttributes: (databaseUser) => {
+    return {
+      email: databaseUser.email,
+    };
   },
 });
 

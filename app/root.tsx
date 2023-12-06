@@ -6,12 +6,12 @@ export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
 
 export default function App() {
   return (
-    <html>
+    <html className="h-full">
       <head>
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="h-full">
         <Outlet />
 
         <Scripts />
