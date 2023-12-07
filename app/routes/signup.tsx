@@ -1,5 +1,6 @@
 import { redirect, type ActionFunctionArgs, json } from '@remix-run/node';
 import { Form } from '@remix-run/react';
+import { auth } from '~/utils/lucia.server';
 
 type SignupFormErrors = {
   email?: string;
@@ -27,11 +28,37 @@ export async function action({ request }: ActionFunctionArgs) {
   const password = formData.get('password')?.toString() || '';
   const errors: SignupFormErrors = validate(email, password);
 
+  try {
+    const user = await auth.createUser({
+      key: {
+        providerId: 'email',
+        providerUserId: email.toLowerCase(),
+        password,
+      },
+      attributes: {
+        email,
+      },
+    });
+
+    const session = await auth.createSession({
+      userId: user.userId,
+      attributes: {},
+    });
+
+    const sessionCookie = auth.createSessionCookie(session);
+
+    return redirect('/', {
+      headers: {
+        'Set-Cookie': sessionCookie.serialize(),
+      },
+    });
+  } catch (e) {
+    errors.auth = 'Authentication failed';
+  }
+
   if (Object.keys(errors).length > 0) {
     return json({ errors });
   }
-
-  return redirect('/');
 }
 
 export default function Signup() {
@@ -46,10 +73,10 @@ export default function Signup() {
               alt="Your Company"
             />
             <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-              Sign in to your account
+              Create your account
             </h2>
           </div>
-          <Form noValidate className="space-y-6" method="POST">
+          <Form noValidate className="space-y-10" method="POST">
             <div className="relative -space-y-px rounded-md shadow-sm">
               <div className="pointer-events-none absolute inset-0 z-10 rounded-md ring-1 ring-inset ring-gray-300" />
               <div>
@@ -80,51 +107,15 @@ export default function Signup() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-3 block text-sm leading-6 text-gray-900"
-                >
-                  Remember me
-                </label>
-              </div>
-
-              <div className="text-sm leading-6">
-                <a
-                  href="/"
-                  className="font-semibold text-indigo-600 hover:text-indigo-500"
-                >
-                  Forgot password?
-                </a>
-              </div>
-            </div>
-
             <div>
               <button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign in
+                Sign up
               </button>
             </div>
           </Form>
-
-          <p className="text-center text-sm leading-6 text-gray-500">
-            Not a member?{' '}
-            <a
-              href="/"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
-            >
-              Start a 14-day free trial
-            </a>
-          </p>
         </div>
       </div>
     </>
