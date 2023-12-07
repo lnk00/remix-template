@@ -3,45 +3,19 @@ import { Form } from '@remix-run/react';
 import { createSessionAndRedirect } from '~/utils/authentication.server';
 import { auth } from '~/utils/lucia.server';
 
-type SignupFormErrors = {
-  email?: string;
-  password?: string;
+type SigninFormErrors = {
   auth?: string;
 };
-
-function validate(email?: string, password?: string): SignupFormErrors {
-  const errors: SignupFormErrors = {};
-
-  if (email === '') errors.email = 'Email is mandatory';
-  if (password === '') errors.password = 'Password is mandatory';
-
-  if (email && !email.includes('@')) errors.email = 'Email must include @';
-
-  if (password && password.length < 10)
-    errors.password = 'Password must be at least 10 characters';
-
-  return errors;
-}
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const email = formData.get('email')?.toString() || '';
   const password = formData.get('password')?.toString() || '';
-  const errors: SignupFormErrors = validate(email, password);
+  const errors: SigninFormErrors = {};
 
   try {
-    const user = await auth.createUser({
-      key: {
-        providerId: 'email',
-        providerUserId: email.toLowerCase(),
-        password,
-      },
-      attributes: {
-        email,
-      },
-    });
-
-    return await createSessionAndRedirect(user.userId, '/');
+    const key = await auth.useKey('email', email.toLowerCase(), password);
+    return await createSessionAndRedirect(key.userId, '/');
   } catch (e) {
     errors.auth = 'Authentication failed';
   }
@@ -51,7 +25,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-export default function Signup() {
+export default function Signin() {
   return (
     <>
       <div className="flex min-h-full flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -63,7 +37,7 @@ export default function Signup() {
               alt="Your Company"
             />
             <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-              Create your account
+              Connect to your account
             </h2>
           </div>
           <Form noValidate className="space-y-10" method="POST">
@@ -102,7 +76,7 @@ export default function Signup() {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign up
+                Sign in
               </button>
             </div>
           </Form>
