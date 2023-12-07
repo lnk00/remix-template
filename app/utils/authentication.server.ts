@@ -7,6 +7,8 @@ export async function isUserAuthenticatedWithCookie(request: Request) {
   if (!session) {
     throw redirect('/signin');
   }
+
+  return session;
 }
 
 export async function createSessionAndRedirect(userId: string, url: string) {

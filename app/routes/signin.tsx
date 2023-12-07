@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { type ActionFunctionArgs, json } from '@remix-run/node';
 import { Form } from '@remix-run/react';
 import { createSessionAndRedirect } from '~/utils/authentication.server';
@@ -80,6 +81,16 @@ export default function Signin() {
               </button>
             </div>
           </Form>
+
+          <p className="text-center text-sm leading-6 text-gray-500">
+            You don't have an account?{' '}
+            <a
+              href="/signup"
+              className="font-semibold text-indigo-600 hover:text-indigo-500"
+            >
+              Create one
+            </a>
+          </p>
         </div>
       </div>
     </>
