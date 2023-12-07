@@ -1,9 +1,9 @@
 import { json, type LoaderFunctionArgs } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
-import { isUserAuthenticatedWithCookie } from '~/utils/authentication.server';
+import { checkNotAuthenthicatedAndRedirect } from '~/utils/authentication.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const session = await isUserAuthenticatedWithCookie(request);
+  const session = await checkNotAuthenthicatedAndRedirect(request, '/signin');
   return json(session.user);
 }
 

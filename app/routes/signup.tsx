@@ -1,6 +1,9 @@
 import { type ActionFunctionArgs, json } from '@remix-run/node';
 import { Form } from '@remix-run/react';
-import { createSessionAndRedirect } from '~/utils/authentication.server';
+import {
+  createSessionAndRedirect,
+  checkAlreadyAuthenticatedAndRedirect,
+} from '~/utils/authentication.server';
 import { auth } from '~/utils/lucia.server';
 
 type SignupFormErrors = {
@@ -21,6 +24,11 @@ function validate(email?: string, password?: string): SignupFormErrors {
     errors.password = 'Password must be at least 10 characters';
 
   return errors;
+}
+
+export async function loader({ request }: ActionFunctionArgs) {
+  await checkAlreadyAuthenticatedAndRedirect(request, '/');
+  return json({});
 }
 
 export async function action({ request }: ActionFunctionArgs) {

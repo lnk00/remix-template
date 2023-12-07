@@ -1,12 +1,9 @@
 import { type ActionFunctionArgs, redirect } from '@remix-run/node';
+import { checkNotAuthenthicatedAndRedirect } from '~/utils/authentication.server';
 import { auth } from '~/utils/lucia.server';
 
 export async function action({ request }: ActionFunctionArgs) {
-  const authRequest = auth.handleRequest(request);
-  const session = await authRequest.validate();
-  if (!session) {
-    throw redirect('/signin');
-  }
+  const session = await checkNotAuthenthicatedAndRedirect(request, '/signin');
   await auth.invalidateSession(session.sessionId);
   const sessionCookie = auth.createSessionCookie(null);
 
