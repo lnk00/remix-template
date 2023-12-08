@@ -10,7 +10,8 @@
     "lint": "eslint app/ --max-warnings=0",
     "migration:create": "drizzle-kit generate:sqlite",
     "migration:apply": "npx tsx drizzle/migrate",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "clean": "rm -rf node_modules build public/build/"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +19,6 @@
   "dependencies": {
     "@libsql/client": "^0.3.5",
     "@lucia-auth/adapter-sqlite": "^2.0.1",
-    "@prisma/adapter-libsql": "^5.6.0",
     "@remix-run/node": "^2.3.0",
     "@remix-run/react": "^2.3.0",
     "@remix-run/serve": "^2.3.0",
