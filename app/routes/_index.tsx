@@ -14,7 +14,7 @@ export default function Landing() {
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-4xl">Welcome !</h1>
       <h2 className="text-2xl pt-6">You are connected with {user.email}</h2>
-      <Form noValidate className="pt-6" method="POST" action="/signout">
+      <Form noValidate className="pt-6" method="POST" action="/api/signout">
         <div>
           <button
             type="submit"
